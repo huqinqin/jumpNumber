@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body onload="Game();">
+    <canvas id="cvs" width="1000" height="800" style="border: 1px solid black;"></canvas>
+    <script>
+        var cvs = document.getElementById('cvs');
+        var ctx = cvs.getContext('2d');
+        var gGame = null;
+        function Game() {
+            gGame = new ball();
+            gGame.update();
+        }
+        function ball() {
+            var _this = this;
+            this.v = 0;
+            this.angle = 0;
+            this.g = 0;
+            this.positionX =  40;
+            this.x = 40;
+            this.y = 780;
+            this.positionY = cvs.height - 20;
+            this.t = 0;
+            this.draw = function () {
+                ctx.beginPath();
+                ctx.arc(_this.positionX,_this.positionY,20,0,Math.PI * 2);
+                ctx.fill()
+            };
+            this.updatePos = function () {
+                _this.t += 0.1;
+                _this.positionX = _this.x + _this.v * Math.cos(_this.angle) * _this.t;
+                _this.positionY = _this.y - (_this.v * Math.sin(_this.angle) * _this.t + 1/2 * _this.g * _this.t * _this.t);
+            };
+            this.update = function () {
+                ctx.clearRect(0,0,cvs.width,cvs.height);
+                _this.draw();
+                _this.updatePos();
+                window.requestAnimationFrame(_this.update);
+            };
+            document.onkeydown = function (e) {
+                if(e.keyCode == 38) {
+                    var angle = parseInt(60 + Math.random() * 20);
+                    _this.v = parseInt(60 + Math.random() * 20);
+                    _this.angle = Math.PI * angle / 180;
+                    _this.g = -10;
+                    _this.t = 0;
+                    _this.x = _this.positionX;
+                    _this.y = _this.positionY;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
